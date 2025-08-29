@@ -21,7 +21,7 @@
       "Modules\\Isetting\\Database\\Seeders\\": "database/Seeders/"
     },
     "files": [
-      "support_tp/helpers.php"
+      "support/helpers.php"
     ]
   },
   "autoload-dev": {
