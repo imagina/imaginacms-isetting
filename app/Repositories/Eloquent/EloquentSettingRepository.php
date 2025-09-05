@@ -121,9 +121,7 @@ class EloquentSettingRepository extends EloquentCoreRepository implements Settin
       }
     }
 
-        //Get All Settings from DB
-        $params->take = 1000;
-        $dbSettings = $this->getItemsBy($params);
+    $dbSettings = $this->getItemsBy($params);
 
     //Get All Settings Formatted
     return app('Modules\Isetting\Services\SettingsService')->getFormatedSettings($configSettings, $dbSettings);

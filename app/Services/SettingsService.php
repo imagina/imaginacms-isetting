@@ -77,6 +77,11 @@ class SettingsService
     $locales = getSupportedLocales();
 
     foreach ($configSettings as $config) {
+
+      if (!empty($config['private']) && !auth()->check()) {
+        continue;
+      }
+
       //Validation to Exist or not in DB
       $existSettingInDB = $dbSettings->firstWhere('system_name', $config['name']);
       if ($existSettingInDB) {
