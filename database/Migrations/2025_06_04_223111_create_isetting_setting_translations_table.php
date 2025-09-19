@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->engine = 'InnoDB';
             $table->increments('id');
             // Your translatable fields
-            $table->json('value');
+            $table->json('value')->nullable();
             $table->integer('setting_id')->unsigned();
             $table->string('locale')->index();
             $table->unique(['setting_id', 'locale']);
