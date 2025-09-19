@@ -20,16 +20,32 @@ class SettingsService
     $configDefault = $this->getFromConfig($systemName, $default);
     $setting = $this->getFromDatabase($systemName);
 
+    //Get Global Config
+    $config = $this->getFromConfig($systemName, $default, true);
+
     if (is_null($setting)) {
       return $configDefault;
     }
 
-    //TODO: Include validation with MEDIA
+    //Validation Case Translations
     if ($setting->is_translatable) {
       $locale = $locale ?: app()->getLocale();
       return $setting->hasTranslation($locale) ? $setting->translate($locale)->value : $configDefault;
     } else {
-      return $setting->plain_value ?: $configDefault;
+
+      //Validation Case Media
+      if (isset($config['isMedia']) && $config['isMedia']) {
+
+        $setting->load('files');
+        $zone = $config['dynamicField']['props']['zone'];
+        $file = $setting->files->firstWhere('pivot.zone', $zone);
+        //Return url
+        return $file->url ?? null;
+      } else {
+
+        //Normal Case
+        return $setting->plain_value ?: $configDefault;
+      }
     }
   }
 
@@ -38,10 +54,15 @@ class SettingsService
    * @param mixed|null $default
    * @return mixed
    */
-  public function getFromConfig(string $systemName, mixed $default = null): mixed
+  public function getFromConfig(string $systemName, mixed $default = null, $onlyConfig = false): mixed
   {
     [$module, $key] = explode('::', $systemName, 2);
-    return config("$module.settings.$key.default", $default);
+
+    if ($onlyConfig) {
+      return config("$module.settings.$key");
+    } else {
+      return config("$module.settings.$key.default", $default);
+    }
   }
 
   /**
